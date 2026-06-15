@@ -15,9 +15,9 @@ Together these three pieces form a **complete training / testing set** for the j
 - **Ground‑truth** – a binary vector (see Section 2) derived from `violated_criteria`.  
 - **LLM‑generated feedback** – natural‑language comments that will be produced during experiments.  
 - **Benchmark** – a suite of metrics (FPR, FNR, cost, latency, flip‑rate, etc.) computed by comparing model predictions with the ground‑truth vectors.
-
+```
 ---
-
+```
 ## 2. JSON Schemas
 
 ### 2.1. Case File (`case_XX_*.json`)
@@ -50,7 +50,7 @@ Together these three pieces form a **complete training / testing set** for the j
   }
 }
 ```
-
+```
 * `metadata` – static information for UI / documentation.  
 * `conceptual_blocks` – logical decomposition of the assignment.  
 * `criteria` – atomic, verifiable requirements. Their IDs become the **axis** of the binary ground‑truth vector.
@@ -131,6 +131,5 @@ solution_variant_*.ipynb  ──►  LLM judgement model  ──► predicted ve
 
 - The **ground‑truth** vector is derived solely from the static JSON files.  
 - The **benchmark** uses that vector as the reference against which the model’s predictions are evaluated.
-
 
 ```
