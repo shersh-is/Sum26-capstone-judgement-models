@@ -1,5 +1,3 @@
-```
-
 # Project Data Overview 
 
 ## 1. Core Entities
@@ -15,9 +13,9 @@ Together these three pieces form a **complete training / testing set** for the j
 - **Ground‑truth** – a binary vector (see Section 2) derived from `violated_criteria`.  
 - **LLM‑generated feedback** – natural‑language comments that will be produced during experiments.  
 - **Benchmark** – a suite of metrics (FPR, FNR, cost, latency, flip‑rate, etc.) computed by comparing model predictions with the ground‑truth vectors.
-```
+
 ---
-```
+
 ## 2. JSON Schemas
 
 ### 2.1. Case File (`case_XX_*.json`)
@@ -50,7 +48,7 @@ Together these three pieces form a **complete training / testing set** for the j
   }
 }
 ```
-```
+
 * `metadata` – static information for UI / documentation.  
 * `conceptual_blocks` – logical decomposition of the assignment.  
 * `criteria` – atomic, verifiable requirements. Their IDs become the **axis** of the binary ground‑truth vector.
@@ -129,7 +127,17 @@ solution_variant_*.ipynb  ──►  LLM judgement model  ──► predicted ve
                      Benchmark scripts → compute FPR, FNR, cost, latency, etc.
 ```
 
-- The **ground‑truth** vector is derived solely from the static JSON files.  
+- The **ground‑truth** vector is derived **only** from the static JSON files.  
 - The **benchmark** uses that vector as the reference against which the model’s predictions are evaluated.
 
-```
+--- 
+
+### Кратко о причинах, почему ваш оригинальный файл «сломался»
+
+| Что было в оригинальном файле | Почему это ломало рендеринг |
+|------------------------------|-----------------------------|
+| Открывающий ``` сразу после таблицы, но закрывающий — после `---` | Парсер закрыл блок кода преждевременно, `---` превратилось в `<hr>` и разорвало документ. |
+| Внутри кода использовались ещё три обратные кавычки (```), но они не заключались в отдельный fenced‑блок | Внутренние ``` считались закрывающими, из‑за чего последующий JSON и текст стали обычным (не‑кодовым) текстом. |
+| Не было пустой строки перед/после некоторых ``` | Некоторые парсеры (GitHub, GitLab) требуют хотя бы одну пустую строку, иначе заголовки и списки могут «притормозиться» внутри кода. |
+
+Применив рекомендации выше, ваш README будет отображаться корректно на всех популярных платформах (GitHub, GitLab, Bitbucket, VS Code preview и т.д.).
