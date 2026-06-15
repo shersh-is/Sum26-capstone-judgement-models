@@ -90,75 +90,7 @@ The resulting `y` is the **ground‑truth** for that particular solution and wil
 
 ---
 
-## 4. How the Metadata Is Consumed by the Benchmark
-
-### 4.1. Typical command‑line entry point
-
-```bash
-python run_benchmark.py \
-    --cases_dir        ./cases \
-    --metadata_path    ./solutions_metadata.json \
-    --model_cfg        ./config/model_map.json
-```
-
-### 4.2. Internal workflow (simplified pseudocode)
-
-```python
-import json, pathlib
-
-# ----------------------------------------------------------------------
-# 1. Load all cases (dictionary: case_id → parsed JSON)
-# ----------------------------------------------------------------------
-cases = {}
-for fp in pathlib.Path("./cases").glob("case_*.json"):
-    data = json.load(open(fp))
-    cid  = data["case_profile"]["metadata"]["case_id"]
-    cases[cid] = data
-
-# ----------------------------------------------------------------------
-# 2. Load solution‑metadata
-# ----------------------------------------------------------------------
-solution_meta = json.load(open("./solutions_metadata.json"))
-
-# ----------------------------------------------------------------------
-# 3. Iterate over every (case, solution) pair
-# ----------------------------------------------------------------------
-benchmark_records = []
-for entry in solution_meta:
-    case_id   = entry["case_id"]
-    sol_path  = entry["solution_id"]
-    violated  = set(entry["violated_criteria"])
-
-    # 3.1. Ordered list of all criteria for this case
-    ordered_criteria = []
-    for block in cases[case_id]["case_profile"]["conceptual_blocks"]:
-        ordered_criteria.extend([c["criterion_id"] for c in block["criteria"]])
-
-    # 3.2. Ground‑truth vector y_true
-    y_true = [0 if cid in violated else 1 for cid in ordered_criteria]
-
-    # 3.3. Obtain model prediction (binary vector) for the notebook
-    #     The function `evaluate_notebook` is part of the judgement model implementation.
-    y_pred, stats = evaluate_notebook(
-        notebook_path = pathlib.Path(sol_path),
-        criteria_ids  = ordered_criteria
-    )
-    # `stats` may contain token count, latency, cost, etc.
-
-    # 3.4. Store everything for later aggregation
-    benchmark_records.append({
-        "case_id":       case_id,
-        "solution_id":   sol_path,
-        "criteria":      ordered_criteria,
-        "y_true":        y_true,
-        "y_pred":        y_pred,
-        "runtime_ms":    stats["runtime_ms"],
-        "token_usage":   stats["token_usage"],
-        "cost_usd":      stats["cost_usd"]
-    })
-```
-
-### 4.3. What the benchmark script finally computes
+## 4. What the benchmark script computes
 
 * **False‑Positive Rate (FPR)** = FP / (FP + TN)  
 * **False‑Negative Rate (FNR)** = FN / (FN + TP)  
@@ -176,65 +108,7 @@ and finally **globally** across the whole dataset. The aggregated results are ex
 
 ---
 
-## 5. Full Dataset Construction Pipeline (Programmatic View)
-
-```python
-import json, pathlib
-
-# ----------------------------------------------------------------------
-# 1. Load cases (dictionary case_id → case JSON)
-# ----------------------------------------------------------------------
-cases_dir = pathlib.Path("./cases")
-cases = {}
-for fp in cases_dir.glob("case_*.json"):
-    case_json = json.load(fp.open())
-    cid = case_json["case_profile"]["metadata"]["case_id"]
-    cases[cid] = case_json
-
-# ----------------------------------------------------------------------
-# 2. Load solution metadata
-# ----------------------------------------------------------------------
-with open("./solutions_metadata.json") as f:
-    solutions_meta = json.load(f)
-
-# ----------------------------------------------------------------------
-# 3. Build the unified dataset list
-# ----------------------------------------------------------------------
-dataset = []          # each element = one (case, solution) example
-for rec in solutions_meta:
-    case_id  = rec["case_id"]
-    sol_path = rec["solution_id"]
-    violated = set(rec["violated_criteria"])
-
-    # 3.1. Ordered list of criteria for this case
-    criteria_order = []
-    for block in cases[case_id]["case_profile"]["conceptual_blocks"]:
-        criteria_order.extend([c["criterion_id"] for c in block["criteria"]])
-
-    # 3.2. Ground‑truth vector
-    y_true = [0 if cid in violated else 1 for cid in criteria_order]
-
-    # 3.3. (Optional) sanity check that the notebook exists
-    assert pathlib.Path(sol_path).exists(), f"Notebook not found: {sol_path}"
-
-    # 3.4. Append the prepared record
-    dataset.append({
-        "case_id":       case_id,
-        "solution_id":   sol_path,
-        "criteria":      criteria_order,   # needed for later evaluation
-        "y_true":        y_true
-    })
-```
-
-The resulting `dataset` list is what the benchmark code consumes (see Section 4). Each entry contains **all information needed** to:
-
-* Load the notebook (`solution_id`).  
-* Know the exact order of criteria (`criteria`).  
-* Compare model output with the **ground‑truth** (`y_true`).  
-
----
-
-## 6. What “Solutions” and Their Metadata Actually Represent
+## 5. What “Solutions” and Their Metadata Actually Represent
 
 | Aspect | Description |
 |--------|-------------|
@@ -244,7 +118,7 @@ The resulting `dataset` list is what the benchmark code consumes (see Section 
 
 ---
 
-## 7. Data‑Flow Diagram (textual)
+## 6. Data‑Flow Diagram (textual)
 
 ```text
 case_XX_*.json
