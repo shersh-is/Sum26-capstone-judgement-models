@@ -1,6 +1,6 @@
 ```
 
-# Project Data Overview (English)
+# Project Data Overview 
 
 ## 1. Core Entities
 
