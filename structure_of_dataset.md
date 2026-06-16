@@ -113,7 +113,6 @@ The list in `violated_criteria` is the **only source** that tells which criteria
    - Ordered list of criteria (`criterion_id`s)  
    - Ground‑truth binary vector (`y_true`)
 
-Each entry therefore represents **one solution** together with its **metadata** (`violated_criteria`) and the **reference vector** used by the benchmark.
 
 ---
 
