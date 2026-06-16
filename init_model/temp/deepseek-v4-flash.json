@@ -1,0 +1,7 @@
+{
+  "criteria": [
+    "Load housing price dataset from CSV into pandas DataFrame.",
+    "Verify absence of missing values after handling.",
+    "Display number or proportion of price outliers."
+  ]
+}
