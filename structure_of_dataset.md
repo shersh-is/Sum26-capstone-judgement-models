@@ -125,4 +125,3 @@ Each entry therefore represents **one solution** together with its **metadata** 
 | **Metadata (`violated_criteria`)** | The list of criterion IDs that the notebook failed to satisfy. It is the sole authoritative source indicating which binary elements should be `0` in the ground‑truth vector. |
 | **Ground‑truth binary vector**| Derived from `violated_criteria`: `0` for each failed criterion, `1` for all others. This vector is used by the benchmark as the target against which model predictions are evaluated. |
 
-Thus, the dataset consists of pairs **(notebook, metadata)** linked to a case, and the metadata directly drives the construction of the ground‑truth vector that the benchmark consumes.
