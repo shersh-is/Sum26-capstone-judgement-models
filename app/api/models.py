@@ -5,6 +5,9 @@ router = APIRouter(
     tags=["models"]
 )
 
-@router.get("/")
+@router.get("/current")
 async def get_models():
-    return []
+    return {
+        "version": 1,
+        "criteria": []
+    }

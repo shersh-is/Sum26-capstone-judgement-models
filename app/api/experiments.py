@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from app.schemas.experiment import ExpRunRequest
 
 router = APIRouter(
     prefix="/experiments",
@@ -6,7 +7,10 @@ router = APIRouter(
 )
 
 @router.post("/run")
-async def run_experiment():
+async def run_experiment(payload: ExpRunRequest):
     return {
-        "status": "started"
+        "run_id": "exp_001",
+        "status": "running",
+        "architecture": payload.architecture,
+        "llm": payload.llm
     }

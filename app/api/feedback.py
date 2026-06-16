@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from app.schemas.feedback import FeedbackCreate
 
 router = APIRouter(
     prefix="/feedback",
@@ -6,7 +7,9 @@ router = APIRouter(
 )
 
 @router.post("/")
-async def create_feedback():
+async def create_feedback(payload: FeedbackCreate):
     return {
-        "message": "feedback endpoint"
+        "accepted": True,
+        "solution_id": payload.solution_id,
+        "feedback_text": payload.feedback_text
     }
