@@ -1,0 +1,5 @@
+{
+  "csv_loading": "Verify that the housing price dataset is explicitly loaded from a CSV file into a pandas DataFrame.",
+  "missing_value_verification": "Confirm that the absence of missing values after handling is explicitly verified.",
+  "outlier_reporting": "Ensure that the number or proportion of price outliers is explicitly displayed."
+}
