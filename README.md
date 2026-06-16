@@ -24,3 +24,6 @@ VCS: Git + GitHub
 1. Implementation of the judgement model constructor in a repository
 2. Generated benchmark reports history (already automated in benchmark)
 3. A short research report visually demonstrating adjustment quality accross iterations (at least 2) through metrics graphs, associated with improvement hypotheses
+
+> Backend is available at http://10.93.27.9:8000/docs \
+> Frontend is available at http://10.93.27.9:8501
