@@ -67,16 +67,33 @@ The list in `violated_criteria` is the **only source** that tells which criteria
 
 ---
 
-## 3. How the Metadata Is Passed to the Benchmark
+## 3. Benchmark
 
-The benchmark receives three inputs:
+## Input data
+- **Evaluation model** – JSON file containing the full set of criteria.  
+- **LLM‑mentor API call** – generates textual feedback and a binary vector for a given solution.  
+- **Correct annotation** – binary vector (ground‑truth) derived from the evaluation model for each solution.
 
-1) evaluation model JSON (case_XX_*.json)
-2) LLM‑mentor API call (produces feedback → binary vector)
-3) correct binary annotation (ground‑truth) derived from violated_criteria
+## Result (JSON + Markdown/PDF report)
+- **Execution log** – records of all runs.  
+- **Metrics (grouped by hierarchy level)**  
+  - FPR (false positive rate)  
+  - FNR (false negative rate)  
+  - Generation cost (e.g., token usage)  
+  - Generation latency (time)  
+  - Flip‑rate (impact of provider non‑determinism)  
 
-The benchmark function compares the generated binary vector with the ground‑truth vector to compute metrics (e.g., FPR, FNR). All three items are supplied as arguments to the benchmark script/function.
-
+### Statistics for each metric (grouped by hierarchy level)
+- Global aggregate (per grouping level)  
+- Weighted mean  
+- Weighted 90 % percentile  
+- Weighted standard deviation  
+- 95 % Confidence Interval for the mean  
+- 95 % Confidence Interval for the 90 % percentile  
+- 95 % Confidence Interval for the standard deviation  
+- Internal dispersion (provider variability)  
+- External dispersion (content variability)  
+- 95 % prediction interval for the metric
 ---
 
 ## 4. How the Dataset Is Constructed
