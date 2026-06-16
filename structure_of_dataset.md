@@ -71,9 +71,9 @@ The list in `violated_criteria` is the **only source** that tells which criteria
 
 The benchmark receives three inputs:
 
-1. **`violated_criteria`** – taken directly from `solutions_metadata.json`.  
-2. **Generated binary vector** – a vector whose length equals the number of criteria in the case JSON; it is built by marking `0` for every `criterion_id` present in `violated_criteria` and `1` for all other criteria.  
-3. **Ground‑truth vector** – identical to the generated binary vector (derived directly from `violated_criteria`).  
+1) evaluation model JSON (case_XX_*.json)
+2) LLM‑mentor API call (produces feedback → binary vector)
+3) correct binary annotation (ground‑truth) derived from violated_criteria
 
 The benchmark function compares the generated binary vector with the ground‑truth vector to compute metrics (e.g., FPR, FNR). All three items are supplied as arguments to the benchmark script/function.
 
