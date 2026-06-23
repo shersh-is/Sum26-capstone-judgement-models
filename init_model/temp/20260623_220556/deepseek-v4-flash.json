@@ -1,0 +1,1 @@
+{"criteria": {"0": "The housing price dataset must be explicitly loaded from a CSV file into a pandas DataFrame.", "1": "The absence of missing values after handling must be explicitly verified.", "2": "The number or proportion of price outliers must be explicitly displayed."}}
