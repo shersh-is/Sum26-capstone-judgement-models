@@ -1,7 +1,16 @@
 import streamlit as st
 
-st.set_page_config(page_title="Models", layout="wide")
+st.set_page_config(
+    page_title="Models",
+    layout="wide"
+)
 st.title("Judgement models")
+
+def load_css():
+    with open("style.css") as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+load_css()
 
 if "current_spec" not in st.session_state:
     st.session_state.current_spec = "Initial task specification:"

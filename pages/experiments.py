@@ -1,8 +1,17 @@
 import streamlit as st
 import random
 
-st.set_page_config(page_title="Experiments", layout="wide")
+st.set_page_config(
+    page_title="Experiments",
+    layout="wide"
+)
 st.title("Experiment cycle")
+
+def load_css():
+    with open("style.css") as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+load_css()
 
 if "current_spec" not in st.session_state:
     st.session_state.current_spec = "Initial task specification: "
@@ -10,6 +19,8 @@ if "spec_quality_history" not in st.session_state:
     st.session_state.spec_quality_history = []
 if "iteration" not in st.session_state:
     st.session_state.iteration = 0
+if "quality" not in st.session_state:
+    st.session_state.quality = "mixed"
 
 def generate_solution(spec, quality="mixed"):
     return f"Solution (quality={quality}) for spec: {spec[:50]}..."
@@ -22,13 +33,30 @@ def diff_spec(current_spec, last_solution, last_feedback):
 
 def run_benchmark(spec):
     return random.uniform(0.5, 1.0)
-    
+
 col1, col2 = st.columns([1, 1])
 
 with col1:
     st.subheader("Run a new cycle")
-    quality = st.select_slider("Solution quality bias", options=["poor", "mixed", "good"], value="mixed")
-    if st.button("run", type="primary"):
+
+    st.write("**Select solution quality:**")
+    q_cols = st.columns(3)
+    with q_cols[0]:
+        if st.button("Poor", key="btn_poor"):
+            st.session_state.quality = "poor"
+            st.rerun()
+    with q_cols[1]:
+        if st.button("Mixed", key="btn_mixed"):
+            st.session_state.quality = "mixed"
+            st.rerun()
+    with q_cols[2]:
+        if st.button("Good", key="btn_good"):
+            st.session_state.quality = "good"
+            st.rerun()
+    
+    st.markdown(f"**Current selection:** <span style='color: #1e2a3a; font-weight: 600;'>{st.session_state.quality}</span>", unsafe_allow_html=True)
+    if st.button("Run", type="primary"):
+        quality = st.session_state.quality
         solution = generate_solution(st.session_state.current_spec, quality)
         feedback = get_perfect_feedback(solution)
         new_spec = diff_spec(st.session_state.current_spec, solution, feedback)
@@ -42,7 +70,7 @@ with col1:
 
     if st.button("Auto‑run several"):
         for i in range(5):
-            sol = generate_solution(st.session_state.current_spec, "mixed")
+            sol = generate_solution(st.session_state.current_spec, st.session_state.quality)
             fb = get_perfect_feedback(sol)
             new_spec = diff_spec(st.session_state.current_spec, sol, fb)
             score = run_benchmark(new_spec)
